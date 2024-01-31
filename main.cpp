@@ -5,16 +5,14 @@
  * Theme: MAKE ME LAUGH
  * Game Design Doc:
  *
- *
 */
 
 
 #include "raylib.h"
 #include "raymath.h"
-#include <stdlib.h>
+
 #include <stdio.h>
-#include "rcamera.h"
-#include <iostream>
+
 #include <random>
 #include <vector>
 
@@ -24,11 +22,11 @@
 // Frame Data for eventual animation of Clownybaras
 struct AnimData
 {
-    Rectangle rec;
-    Vector3 pos;
-    int frame;
-    float updateTime;
-    float runningTime;
+    Rectangle rec{};
+    Vector3 pos{};
+    int frame{};
+    float updateTime{};
+    float runningTime{};
     int facing{1};
 };
 
@@ -70,7 +68,7 @@ AnimData updateAnimData (AnimData data, float deltaTime, int maxFrame)
     if (data.runningTime >= data.updateTime)
     {
         data.runningTime = 0.0;
-        data.rec.x = data.frame * data.rec.width;
+        data.rec.x = static_cast<float>(data.frame) * data.rec.width;
         data.frame++;
         if (data.frame > maxFrame)
         {
@@ -82,10 +80,10 @@ AnimData updateAnimData (AnimData data, float deltaTime, int maxFrame)
 GameState currentGameState = START_SCREEN;
 int main()
 {
-    const int screenWidth{1200};
-    const int screenHeight{800};
-    const int cappyFrameCount{14};
-    const int grumFrameCount{4};
+    constexpr int screenWidth{1200};
+    constexpr int screenHeight{800};
+    constexpr int cappyFrameCount{14};
+    constexpr int grumFrameCount{4};
 
 
     // [----------------- WINDOW INITILIZATION -----------------]
@@ -105,18 +103,18 @@ int main()
 
 
     // Generate random columns in the room
-    int max_col_height = 12;
     float heights[MAX_COLUMNS]{0};
     Vector3 positions[MAX_COLUMNS]{0};
     Color colors[MAX_COLUMNS]{0};
 
     for (int i = 0; i < MAX_COLUMNS; i++)
     {
-        heights[i] = (float)GetRandomValue(1, max_col_height);
-        positions[i] = (Vector3){ (float)GetRandomValue(-15, 15), heights[i]/2.0f,
-            (float)GetRandomValue(-15, 15)};
-        colors[i] = (Color){ (unsigned char)GetRandomValue(20, 255),
-            (unsigned char)GetRandomValue(10, 55), 40, 255};
+        int max_col_height = 12;
+        heights[i] = static_cast<float>(GetRandomValue(1, max_col_height));
+        positions[i] = (Vector3){ static_cast<float>(GetRandomValue(-15, 15)), heights[i]/2.0f,
+            static_cast<float>(GetRandomValue(-15, 15))};
+        colors[i] = (Color){ static_cast<unsigned char>(GetRandomValue(20, 255),
+            GetRandomValue(10, 55), 40, 255)};
     }
 
     DisableCursor();
