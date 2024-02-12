@@ -11,7 +11,7 @@
 #include "raylib.h"
 #include "raymath.h"
 
-#include <stdio.h>
+#include <cstdio>
 
 #include <random>
 #include <vector>
@@ -113,8 +113,11 @@ int main()
         heights[i] = static_cast<float>(GetRandomValue(1, max_col_height));
         positions[i] = (Vector3){ static_cast<float>(GetRandomValue(-15, 15)), heights[i]/2.0f,
             static_cast<float>(GetRandomValue(-15, 15))};
-        colors[i] = (Color){ static_cast<unsigned char>(GetRandomValue(20, 255),
-            GetRandomValue(10, 55), 40, 255)};
+        colors[i] = (Color){
+            static_cast<unsigned char>(GetRandomValue(20, 255)),
+            static_cast<unsigned char>(GetRandomValue(10, 255)),
+            static_cast<unsigned char>(GetRandomValue(10, 255)), 255,};
+
     }
 
     DisableCursor();
@@ -154,8 +157,8 @@ int main()
     bool isAirborne{false};
     float velocity{0};
     float runSpeed{1.f};
-    const float jumpHeight{1.5f};
-    const float gravity{9.8f};
+    constexpr float jumpHeight{1.5f};
+    constexpr float gravity{9.8f};
     float groundLevel{2.f};
 
     // scaling tests
@@ -168,11 +171,11 @@ int main()
     bool drawRay = false;
     bool confirmGameWindowExit{false};
     float shootTimer{0.f};
-    float shootInterval = (float)GetRandomValue(2, 5);
+    auto shootInterval = static_cast<float>(GetRandomValue(2, 5));
     bool showDebugText{false};
-    const unsigned int maxHealth{3};
-    const unsigned int maxGrumHealth{3};
-    const unsigned int maxCappyHealth{1};
+    constexpr unsigned int maxHealth{3};
+    constexpr unsigned int maxGrumHealth{3};
+    constexpr unsigned int maxCappyHealth{1};
     unsigned int cappyHealth = maxCappyHealth;
     unsigned int currentHealth = maxHealth;
     unsigned int grumHealth = maxGrumHealth;
@@ -208,11 +211,11 @@ int main()
     // GRUM HEARTS
     std::vector<HeartUI> grumHearts;
     hearts.resize(grumHealth);
-    for (auto &heart : grumHearts)
+    for (auto &[fullTex, emptyTex, isFull, rec] : grumHearts)
     {
-        heart.fullTex = LoadTexture("assets/art/full_heart.png");
-        heart.emptyTex = LoadTexture("assets/art/empty_heart.png");
-        heart.isFull = true;
+        fullTex = LoadTexture("assets/art/full_heart.png");
+        emptyTex = LoadTexture("assets/art/empty_heart.png");
+        isFull = true;
     }
 
     // [-------------- RANDOM NUMBER GENERATOR -----------------------]
@@ -425,11 +428,11 @@ int main()
         }
 
         // Update player projectiles
-        for (auto &projectile : playerProjectiles)
+        for (auto &[position, speed, isActive, timeAlive] : playerProjectiles)
         {
-            if (projectile.isActive)
+            if (isActive)
             {
-                projectile.position = Vector3Add(projectile.position, Vector3Scale(projectile.speed, dT));
+                position = Vector3Add(position, Vector3Scale(speed, dT));
                 // TODO -- Collision Detection
             }
         }
@@ -586,7 +589,8 @@ int main()
             if(showDebugText)
             {
                 Vector2 debugBoxPos{screenWidth - 335, 5};
-                unsigned int debugBoxPosX = debugBoxPos.x;
+                unsigned int debugBoxPosX;
+                debugBoxPosX = static_cast<unsigned int>(debugBoxPos.x);
                 DrawRectangle(debugBoxPos.x, debugBoxPos.y, 330, 200, Fade(SKYBLUE, 0.5f));
                 DrawText(TextFormat("FPS: %i", fps), debugBoxPosX, 15, 30, BLACK);
                 DrawText(TextFormat("- Position: (%06.3f, %06.3f, %06.3f)", cam.position.x, cam.position.y, cam.position.z), debugBoxPosX, 60, 10, BLACK);
@@ -657,6 +661,7 @@ int main()
                 currentHealth = maxHealth;
                 grumHealth = maxGrumHealth;
                 cappy3DPos = {0.f, 1.f, 0.f};
+
             }
         }
 

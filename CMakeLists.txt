@@ -6,7 +6,8 @@ set(CMAKE_CXX_STANDARD 20)
 # Find raylib
 find_package(raylib REQUIRED)
 
-add_executable(GGJ24 main.cpp)
+add_executable(GGJ24 main.cpp
+)
 
 #link agaisnt raylib library
 target_link_libraries(GGJ24 raylib "-framework IOKit" "-framework Cocoa" "-framework OpenGL")
